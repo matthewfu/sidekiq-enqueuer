@@ -1,18 +1,21 @@
-<h3>Enqueuer</h3>
+<h3>Enqueuer - Run for one time</h3>
 
 <table class="table table-hover table-bordered table-striped table-white">
   <thead>
     <tr>
       <th>Name</th>
       <th>Params</th>
+      <th>Desc</th>
       <th>Actions</th>
     </tr>
   </thead>
   <tbody>
     <% @jobs.each do |job| %>
       <tr>
-        <td width="40%"><%= job.name %></td>
-        <td width="40%"><%= job.params.map(&:name).join(', ') %></td>
+        <td width="20%"><%= job.name %></td>
+        <td width="30%"><%= job.params.map(&:name).join(', ') %></td>
+        <td width="20%"><%= Object.const_get(job.name).respond_to?(:description) ? Object.const_get(job.name).description.truncate(27) : 'N/A' %></td>
+        <td width="10%"><%= Object.const_get(job.name).respond_to?(:maintance_note) ? Object.const_get(job.name).maintance_note.truncate(15) : 'N/A' %></td>
         <td width="20%">
           <a class="btn btn-danger btn-xs" href="<%= root_path %>enqueuer/<%= job.name %>" style="color: white;">
             Enqueue Form

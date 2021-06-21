@@ -38,7 +38,7 @@ module Sidekiq
         end
 
         def deduce_params
-          worker_params.empty? ? [] : worker_params.map { |e| Sidekiq::Enqueuer::Worker::Param.new(e[1], e[0]) }
+          worker_params.empty? ? [] : worker_params.map { |e| Sidekiq::Enqueuer::Worker::Param.new(e[1], e[0], job) }
         end
 
         def worker_params

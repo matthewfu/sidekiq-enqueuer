@@ -7,7 +7,12 @@ module Sidekiq
                            Sidekiq::Extensions::DelayedModel
                            Sidekiq::Extensions::DelayedMailer
                            Sidekiq::Extensions::DelayedClass
-                           ActiveJob::QueueAdapters).freeze
+                           ActiveJob::QueueAdapters
+                           ActionMailer::DeliveryJob
+                           ActiveStorage::BaseJob
+                           ApplicationJob
+                           ActiveJob::QueueAdapters::SidekiqAdapter::JobWrapper
+                           ).freeze
 
       def initialize(enqueue_using_async = nil)
         @enqueue_using_async = true if enqueue_using_async.nil?
@@ -31,7 +36,9 @@ module Sidekiq
         all_jobs << sidekiq_jobs
         all_jobs << active_jobs if defined?(::ActiveJob)
         all_jobs = all_jobs.flatten
+        all_jobs.select{|klass| klass.respond_to?('show_on_ui?') && klass.show_on_ui? }
         all_jobs.delete_if { |klass| IGNORED_CLASSES.include?(klass.to_s) }
+        all_jobs
       end
 
       def sidekiq_jobs
